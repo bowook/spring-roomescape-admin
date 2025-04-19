@@ -12,39 +12,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.dto.ReservationRequest;
+import roomescape.reservation.dto.ReservationResponse;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-    private static final int INITIAL_VALUE = 1;
+    private static final long INITIAL_VALUE = 1;
 
     private final AtomicLong id = new AtomicLong(INITIAL_VALUE);
     private final List<Reservation> reservations = new ArrayList<>();
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getReservations() {
-        return ResponseEntity.ok(reservations);
+    public List<Reservation> getReservations() {
+        return reservations;
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(
-            @RequestBody Reservation reservation
-    ) {
-        Reservation newReservation = Reservation.toEntity(reservation, id.getAndIncrement());
+    public ReservationResponse createReservation(@RequestBody ReservationRequest reservationRequest) {
+        Reservation newReservation = Reservation.withId(reservationRequest, id.getAndIncrement());
         reservations.add(newReservation);
 
-        return ResponseEntity.ok(newReservation);
+        return new ReservationResponse(
+                newReservation.getId(),
+                newReservation.getName(),
+                newReservation.getDate(),
+                newReservation.getTime()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservations(
-            @PathVariable("id") long id
-    ) {
+    public ResponseEntity<Void> deleteReservations(@PathVariable("id") long id) {
         boolean isRemoved = reservations.removeIf(reservation -> reservation.isSameId(id));
         if (isRemoved) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
-
 }
