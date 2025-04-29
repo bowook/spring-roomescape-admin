@@ -6,7 +6,6 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +26,6 @@ public class ReservationTimeJdbcDaoTest {
 
     @Autowired
     private ReservationTimeDao reservationTimeDao;
-
-    @AfterEach
-    void afterEach() {
-        String deleteQuery = "DELETE from reservation_time";
-        jdbcTemplate.update(deleteQuery);
-    }
 
     @DisplayName("모든 예약 시간 조회 테스트")
     @Test

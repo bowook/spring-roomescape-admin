@@ -30,8 +30,6 @@ public class ReservationJdbcDaoTest {
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.update("DELETE FROM reservation");
-        jdbcTemplate.update("DELETE FROM reservation_time");
         jdbcTemplate.update("INSERT INTO reservation_time (id, start_at) VALUES (?, ?)", 1L, LocalTime.of(18, 22));
     }
 
